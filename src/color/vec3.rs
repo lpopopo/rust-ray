@@ -19,6 +19,11 @@ impl Vec3 {
     pub fn z(&self) -> f64 {
         self.e.2
     }
+
+    pub fn dot(&self, other: Vec3) -> f64 {
+        let d = self.x() * other.x() + self.y() * other.y() + self.z() * other.z();
+        d
+    }
 }
 /**
  * 实现Vec3 类型之间的加法
