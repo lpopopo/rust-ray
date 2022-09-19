@@ -24,6 +24,10 @@ impl Vec3 {
         let d = self.x() * other.x() + self.y() * other.y() + self.z() * other.z();
         d
     }
+
+    pub fn unit_vec3(&self) -> Vec3 {
+        *self / 3.0
+    }
 }
 /**
  * 实现Vec3 类型之间的加法
