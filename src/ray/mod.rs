@@ -1,4 +1,6 @@
 use crate::color::vec3::Vec3;
+use crate::hittable::{HitRecord, Hittable};
+use std::f64::INFINITY;
 
 pub struct Ray<'a> {
     orig: &'a Vec3,
@@ -41,17 +43,15 @@ impl Ray<'_> {
         ray
     }
 
-    pub fn ray_color(&self) -> Vec3 {
-        let t = hit_sphere(&Vec3::new(0.0, 0.0, -1.0), 0.5, &self);
-        let res = if t > 0.0 {
-            let n = (self.at(t) - Vec3::new(0.0, 0.0, -1.0)).unit_vec3();
-            Vec3::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0) * 0.5
-        } else {
-            let unit_direction = (*self.dir).unit_vec3();
-            let t = (unit_direction.y() + 1.0) / 2.0;
-            let res_ray = Vec3::new(1.0, 1.0, 1.0) * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t;
-            res_ray
-        };
-        res
+    pub fn ray_color(&self, world: &dyn Hittable) -> Vec3 {
+        let mut rec = HitRecord::new();
+        if world.hit(self, 0.0, INFINITY, &mut rec) {
+            return (rec.normal + Vec3::new(1.0, 1.0, 1.0)) / 2.0;
+        }
+
+        let unit_direction = (*self.dir).unit_vec3();
+        let t = (unit_direction.y() + 1.0) / 2.0;
+        let res_ray = Vec3::new(1.0, 1.0, 1.0) * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t;
+        res_ray
     }
 }

@@ -28,6 +28,10 @@ impl Vec3 {
     pub fn unit_vec3(&self) -> Vec3 {
         *self / 3.0
     }
+
+    pub fn length_squared(&self) -> f64 {
+        self.x() * self.x() + self.y() * self.y() + self.z() * self.z()
+    }
 }
 /**
  * 实现Vec3 类型之间的加法
