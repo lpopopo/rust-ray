@@ -18,7 +18,7 @@ impl Sphere {
 
 impl Hittable for Sphere {
     fn hit(&self, ray: &Ray, t_min: f64, t_max: f64, rec: &mut crate::hittable::HitRecord) -> bool {
-        let oc = *ray.orig() - self.center;
+        let oc = ray.orig() - self.center;
         let a = ray.dir().length_squared();
         let half_b = ray.dir().dot(oc);
         let c = oc.length_squared() - self.radius * self.radius;
