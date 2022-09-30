@@ -1,3 +1,4 @@
+use rand::prelude::*;
 #[derive(Clone, Copy, Debug)]
 pub struct Vec3 {
     e: (f64, f64, f64),
@@ -31,6 +32,44 @@ impl Vec3 {
 
     pub fn length_squared(&self) -> f64 {
         self.x() * self.x() + self.y() * self.y() + self.z() * self.z()
+    }
+
+    pub fn random(&self, min: f64, max: f64) -> Vec3 {
+        let mut gen = rand::thread_rng();
+        Vec3 {
+            e: (
+                gen.gen_range(min..max) as f64,
+                gen.gen_range(min..max) as f64,
+                gen.gen_range(min..max) as f64,
+            ),
+        }
+    }
+
+    pub fn random_in_unit_sphere(&self) -> Vec3 {
+        let mut p = Vec3::new(0.0, 0.0, 0.0);
+        let mut c = true;
+        while c {
+            p = self.random(-1.0, 1.0);
+            if p.length_squared() >= 1.0 {
+                continue;
+            } else {
+                c = false
+            }
+        }
+        p
+    }
+
+    pub fn random_unit_vector(&self) -> Vec3 {
+        return self.random_in_unit_sphere().unit_vec3();
+    }
+
+    pub fn random_in_hemisphere(&self, normal: Vec3) -> Vec3 {
+        let in_unit_sphere = self.random_unit_vector();
+        if in_unit_sphere.dot(normal) > 0.0 {
+            return in_unit_sphere;
+        } else {
+            return -in_unit_sphere;
+        };
     }
 }
 /**
@@ -106,6 +145,15 @@ impl std::ops::Div<f64> for Vec3 {
     fn div(self, other: f64) -> Vec3 {
         Vec3 {
             e: (self.x() / other, self.y() / other, self.z() / other),
+        }
+    }
+}
+
+impl std::ops::Neg for Vec3 {
+    type Output = Vec3;
+    fn neg(self) -> Self::Output {
+        Vec3 {
+            e: (-self.x(), -self.y(), -self.y()),
         }
     }
 }

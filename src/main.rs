@@ -5,7 +5,6 @@ use ray_tracing::camera::Camera;
 use ray_tracing::color::vec3::Vec3;
 use ray_tracing::color::{write_color, write_file_info};
 use ray_tracing::hittable_list::HittableList;
-use ray_tracing::ray::Ray;
 use ray_tracing::sphere::Sphere;
 
 fn main() {
@@ -16,6 +15,7 @@ fn main() {
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
     const IMAGE_WIDTH: f64 = 400.0;
     const IMAGE_HEIGHT: f64 = IMAGE_WIDTH / ASPECT_RATIO;
+    const MAX_DEPTH: u32 = 50;
 
     const SAMPLES_PER_PIXEL: u32 = 100;
 
@@ -25,21 +25,21 @@ fn main() {
     //world
     let mut world = HittableList::new();
     world.add(Box::new(Sphere::new(0.0, 0.0, -1.0, 0.5)));
-    world.add(Box::new(Sphere::new(0.0, 1.0, 0.0, 0.1)));
+    world.add(Box::new(Sphere::new(0.0, -100.5, -1.0, 100.0)));
 
     //Camera
-    let mut camera = Camera::new();
+    let camera = Camera::new();
 
     //render
     for i in (0..image.height()).rev() {
         for j in 0..image.width() {
             let mut pixel_color = Vec3::new(0.0, 0.0, 0.0);
-            for s in 0..SAMPLES_PER_PIXEL {
+            for _s in 0..SAMPLES_PER_PIXEL {
                 let u: f64 = (j as f64 + rng.gen::<f64>()) / (IMAGE_WIDTH - 1.0);
                 let v: f64 = (i as f64 + rng.gen::<f64>()) / (IMAGE_HEIGHT - 1.0);
 
                 let ray = camera.get_ray(u, v);
-                pixel_color = pixel_color + ray.ray_color(&mut world)
+                pixel_color = pixel_color + ray.ray_color(&mut world, MAX_DEPTH)
             }
             write_color(&pixel_color, SAMPLES_PER_PIXEL as f64);
         }

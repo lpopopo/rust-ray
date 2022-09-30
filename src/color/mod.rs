@@ -10,9 +10,9 @@ pub fn write_color(color: &Vec3, samples_per_pixel: f64) {
     const COLOR_PIXEL: f64 = 256.0;
     println!(
         "{} {} {}",
-        (COLOR_PIXEL * clamp(color.x() * scale, 0.0, 0.999)) as u32,
-        (COLOR_PIXEL * clamp(color.y() * scale, 0.0, 0.999)) as u32,
-        (COLOR_PIXEL * clamp(color.z() * scale, 0.0, 0.999)) as u32
+        (COLOR_PIXEL * clamp(color.x() * scale, 0.0, 0.999).sqrt()) as u32,
+        (COLOR_PIXEL * clamp(color.y() * scale, 0.0, 0.999).sqrt()) as u32,
+        (COLOR_PIXEL * clamp(color.z() * scale, 0.0, 0.999).sqrt()) as u32
     )
 }
 

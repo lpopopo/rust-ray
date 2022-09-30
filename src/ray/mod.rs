@@ -7,19 +7,19 @@ pub struct Ray {
     dir: Vec3,
 }
 
-fn hit_sphere(center: &Vec3, radius: f64, r: &Ray) -> f64 {
-    let oc = r.orig() - *center;
-    let a = r.dir().dot(r.dir());
-    let b = r.dir().dot(oc) * 2.0;
-    let c = oc.dot(oc) - radius * radius;
-    let discriminant = b * b - 4.0 * a * c;
-    let res = if discriminant > 0.0 {
-        1.0
-    } else {
-        -b - discriminant.sqrt() / (2.0 * a)
-    };
-    res
-}
+// fn hit_sphere(center: &Vec3, radius: f64, r: &Ray) -> f64 {
+//     let oc = r.orig() - *center;
+//     let a = r.dir().dot(r.dir());
+//     let b = r.dir().dot(oc) * 2.0;
+//     let c = oc.dot(oc) - radius * radius;
+//     let discriminant = b * b - 4.0 * a * c;
+//     let res = if discriminant > 0.0 {
+//         1.0
+//     } else {
+//         -b - discriminant.sqrt() / (2.0 * a)
+//     };
+//     res
+// }
 
 impl Ray {
     pub fn new(orig: Vec3, dir: Vec3) -> Ray {
@@ -43,14 +43,19 @@ impl Ray {
         ray
     }
 
-    pub fn ray_color(&self, world: &dyn Hittable) -> Vec3 {
-        let mut rec = HitRecord::new();
-        if world.hit(self, 0.0, INFINITY, &mut rec) {
-            return (rec.normal + Vec3::new(1.0, 1.0, 1.0)) / 2.0;
+    pub fn ray_color(&self, world: &dyn Hittable, depth: u32) -> Vec3 {
+        if depth <= 0 {
+            return Vec3::new(0.0, 0.0, 0.0);
         }
 
-        let unit_direction = (self.dir).unit_vec3();
-        let t = (unit_direction.y() + 1.0) / 2.0;
+        let mut rec = HitRecord::new();
+        if world.hit(self, 0.0, INFINITY, &mut rec) {
+            let target =
+                rec.point + rec.normal + Vec3::new(0.0, 0.0, 0.0).random_in_hemisphere(rec.normal);
+            return Ray::new(rec.point, target - rec.point).ray_color(world, depth - 1) * 0.5;
+        }
+        let unit_direction = self.dir().unit_vec3();
+        let t = (unit_direction.y() + 1.0) * 0.5;
         let res_ray = Vec3::new(1.0, 1.0, 1.0) * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t;
         res_ray
     }
