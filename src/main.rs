@@ -6,7 +6,7 @@ use ray_tracing::color::vec3::Vec3;
 use ray_tracing::color::{write_color, write_file_info};
 use ray_tracing::hittable::{HitRecord, Hittable};
 use ray_tracing::hittable_list::HittableList;
-use ray_tracing::material::{Lambertian, Metal};
+use ray_tracing::material::{Dielectric, Lambertian, Metal};
 use ray_tracing::ray::Ray;
 use ray_tracing::sphere::Sphere;
 
@@ -56,11 +56,11 @@ fn main() {
     //world
     let mut world = HittableList::new();
     let material_ground = Box::<Lambertian>::new(Lambertian::new(Vec3(0.8, 0.8, 0.0)));
-    let material_center = Box::<Lambertian>::new(Lambertian::new(Vec3(0.7, 0.3, 0.3)));
-    let material_left = Box::<Metal>::new(Metal::new(Vec3(0.8, 0.8, 0.8)));
+    let material_center = Box::<Dielectric>::new(Dielectric::new(1.5));
+    let material_left = Box::<Dielectric>::new(Dielectric::new(1.5));
+    let material_left_2 = Box::<Dielectric>::new(Dielectric::new(1.5));
     let material_right = Box::<Metal>::new(Metal::new(Vec3(0.8, 0.6, 0.2)));
-    material_left.set_fuzz(0.3);
-    material_right.set_fuzz(1.0);
+    material_right.set_fuzz(0.0);
 
     world.add(Box::new(Sphere::new(
         0.0,
@@ -71,6 +71,13 @@ fn main() {
     )));
     world.add(Box::new(Sphere::new(0.0, 0.0, -1.0, 0.5, material_center)));
     world.add(Box::new(Sphere::new(-1.0, 0.0, -1.0, 0.5, material_left)));
+    world.add(Box::new(Sphere::new(
+        -1.0,
+        0.0,
+        -1.0,
+        -0.4,
+        material_left_2,
+    )));
     world.add(Box::new(Sphere::new(1.0, 0.0, -1.0, 0.5, material_right)));
 
     //Camera

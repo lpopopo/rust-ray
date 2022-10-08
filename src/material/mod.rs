@@ -1,3 +1,4 @@
+use crate::utils::random;
 use crate::{color::vec3::Vec3, hittable::HitRecord, ray::Ray};
 use std::fmt::Debug;
 
@@ -101,5 +102,55 @@ impl Material for Metal {
     }
     fn box_clone(&self) -> Box<dyn Material> {
         Box::new(Metal::new(self.albedo).set_fuzz(self.fuzz))
+    }
+}
+
+#[derive(Debug)]
+pub struct Dielectric {
+    pub ir: f64,
+}
+
+impl Dielectric {
+    pub fn new(index_of_refraction: f64) -> Dielectric {
+        Dielectric {
+            ir: index_of_refraction,
+        }
+    }
+}
+fn reflectance(cosine: f64, ref_idx: f64) -> f64 {
+    let mut r0 = (1.0 - ref_idx) / (1.0 + ref_idx);
+    r0 = r0 * r0;
+    r0 + (1.0 - r0) * (1.0 - cosine).powf(5.0)
+}
+impl Material for Dielectric {
+    fn scatter(
+        &mut self,
+        ray_in: &Ray,
+        record: &mut HitRecord,
+        attenuation: &mut Vec3,
+        scattered: &mut Ray,
+    ) -> bool {
+        *attenuation = Vec3::fill(1.0);
+        let refraction_ratio = if record.front_face {
+            1.0 / self.ir
+        } else {
+            self.ir
+        };
+        let unit_direction = ray_in.direction.unit_vector();
+        let cos_theta = 1.0_f64.min((-unit_direction).dot(record.normal));
+        let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
+        let cannot_refract = refraction_ratio * sin_theta > 1.0;
+
+        let direction = if cannot_refract || reflectance(cos_theta, refraction_ratio) > random() {
+            Vec3::reflect(unit_direction, record.normal)
+        } else {
+            Vec3::refract(unit_direction, record.normal, refraction_ratio)
+        };
+        *scattered = Ray::new(record.point, direction);
+        true
+    }
+
+    fn box_clone(&self) -> Box<dyn Material> {
+        Box::new(Dielectric::new(self.ir))
     }
 }
