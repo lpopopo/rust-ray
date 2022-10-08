@@ -15,11 +15,11 @@ impl Camera {
         const VIEWPORT_WIDTH: f64 = ASPECT_RATIO * VIEWPORT_HEIGHT;
         const FOCAL_LENGTH: f64 = 1.0;
 
-        let origin = Vec3::new(0.0, 0.0, 0.0);
-        let horizontal = Vec3::new(VIEWPORT_WIDTH, 0.0, 0.0);
-        let vertical = Vec3::new(0.0, VIEWPORT_HEIGHT, 0.0);
+        let origin = Vec3(0.0, 0.0, 0.0);
+        let horizontal = Vec3(VIEWPORT_WIDTH, 0.0, 0.0);
+        let vertical = Vec3(0.0, VIEWPORT_HEIGHT, 0.0);
         let lower_left_corner =
-            origin - horizontal * 0.5 - vertical * 0.5 - Vec3::new(0.0, 0.0, FOCAL_LENGTH);
+            origin - horizontal * 0.5 - vertical * 0.5 - Vec3(0.0, 0.0, FOCAL_LENGTH);
 
         Camera {
             origin: origin,
@@ -30,7 +30,7 @@ impl Camera {
     }
 
     pub fn get_ray(&self, u: f64, v: f64) -> Ray {
-        let dir = self.lower_left_corner + self.horizontal * u + self.vertical * v - self.origin;
+        let dir = self.lower_left_corner + self.horizontal * u + self.vertical * v;
         Ray::new(self.origin, dir)
     }
 }

@@ -1,46 +1,48 @@
 use crate::color::vec3::Vec3;
+use crate::material::{DefaultMaterial, Material};
 use crate::ray::Ray;
 
+#[derive(Debug)]
 pub struct HitRecord {
     pub point: Vec3,
     pub normal: Vec3,
     pub t: f64,
     pub front_face: bool,
+    pub material: Box<dyn Material>,
 }
 
 impl HitRecord {
     pub fn new() -> HitRecord {
         HitRecord {
-            point: Vec3::new(0.0, 0.0, 0.0),
-            normal: Vec3::new(0.0, 0.0, 0.0),
+            point: Vec3(0.0, 0.0, 0.0),
+            normal: Vec3(0.0, 0.0, 0.0),
             t: 0.0,
             front_face: false,
+            material: Box::new(DefaultMaterial::new()),
         }
     }
-
-    pub fn t(&self) -> f64 {
-        self.t
-    }
-
     pub fn set_point(&mut self, point: Vec3) {
-        self.point = point
+        self.point = point;
     }
     pub fn set_t(&mut self, t: f64) {
-        self.t = t
+        self.t = t;
     }
-    pub fn set_normal(&mut self, normal: Vec3) {
-        self.normal = normal
+    pub fn set_material(&mut self, material: Box<dyn Material>) {
+        self.material = material;
     }
-    pub fn set_front_face(&mut self, ray: &Ray, outward_normal: Vec3) {
-        let front_face = ray.dir().dot(outward_normal) < 0.0;
+    pub fn set_face_normal(&mut self, ray: &Ray, outward_normal: Vec3) {
+        let front_face = ray.direction.dot(outward_normal) < 0.0;
+
         self.front_face = front_face;
+
         self.normal = if front_face {
             outward_normal
         } else {
-            outward_normal
+            -outward_normal
         }
     }
 }
+
 pub trait Hittable: Send + Sync {
-    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool;
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64, record: &mut HitRecord) -> bool;
 }
