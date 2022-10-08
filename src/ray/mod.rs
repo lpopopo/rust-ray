@@ -1,6 +1,4 @@
 use crate::color::vec3::Vec3;
-use crate::hittable::{HitRecord, Hittable};
-use std::f64::INFINITY;
 
 #[derive(Debug, Clone)]
 pub struct Ray {

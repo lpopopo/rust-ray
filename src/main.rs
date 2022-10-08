@@ -59,6 +59,8 @@ fn main() {
     let material_center = Box::<Lambertian>::new(Lambertian::new(Vec3(0.7, 0.3, 0.3)));
     let material_left = Box::<Metal>::new(Metal::new(Vec3(0.8, 0.8, 0.8)));
     let material_right = Box::<Metal>::new(Metal::new(Vec3(0.8, 0.6, 0.2)));
+    material_left.set_fuzz(0.3);
+    material_right.set_fuzz(1.0);
 
     world.add(Box::new(Sphere::new(
         0.0,
