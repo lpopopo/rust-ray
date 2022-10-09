@@ -85,12 +85,17 @@ fn main() {
 
     //Camera
 
+    let lookfrom = Vec3(3.0, 3.0, 2.0);
+    let lookat = Vec3(0.0, 0.0, -1.0);
+    let vup = Vec3(0.0, 1.0, 0.0);
     let camera = Camera::new(
-        Vec3(-2.0, 2.0, 1.0),
-        Vec3(0.0, 0.0, -1.0),
-        Vec3(0.0, 1.0, 0.0),
+        lookfrom,
+        lookat,
+        vup,
         20.0,
         2.0,
+        2.0,
+        (lookfrom - lookat).len(),
     );
 
     //render
