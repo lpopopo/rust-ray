@@ -1,4 +1,6 @@
 mod image;
+use std::f64::consts::PI;
+
 use image::Image;
 use rand;
 use ray_tracing::camera::Camera;
@@ -54,9 +56,10 @@ fn main() {
     write_file_info(image.width(), image.height());
 
     //world
+    // let r: f64 = (PI / 4.0).cos();
     let mut world = HittableList::new();
     let material_ground = Box::<Lambertian>::new(Lambertian::new(Vec3(0.8, 0.8, 0.0)));
-    let material_center = Box::<Dielectric>::new(Dielectric::new(1.5));
+    let material_center = Box::<Lambertian>::new(Lambertian::new(Vec3(0.1, 0.2, 0.5)));
     let material_left = Box::<Dielectric>::new(Dielectric::new(1.5));
     let material_left_2 = Box::<Dielectric>::new(Dielectric::new(1.5));
     let material_right = Box::<Metal>::new(Metal::new(Vec3(0.8, 0.6, 0.2)));
@@ -75,13 +78,20 @@ fn main() {
         -1.0,
         0.0,
         -1.0,
-        -0.4,
+        -0.45,
         material_left_2,
     )));
     world.add(Box::new(Sphere::new(1.0, 0.0, -1.0, 0.5, material_right)));
 
     //Camera
-    let camera = Camera::new();
+
+    let camera = Camera::new(
+        Vec3(-2.0, 2.0, 1.0),
+        Vec3(0.0, 0.0, -1.0),
+        Vec3(0.0, 1.0, 0.0),
+        20.0,
+        2.0,
+    );
 
     //render
     for i in (0..image.height()).rev() {

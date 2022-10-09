@@ -1,3 +1,5 @@
+use std::f64::consts::PI;
+
 use rand;
 
 pub fn random() -> f64 {
@@ -16,4 +18,8 @@ pub fn clamp(num: f64, min: f64, max: f64) -> f64 {
     } else {
         num
     }
+}
+
+pub fn degrees_to_radians(degress: f64) -> f64 {
+    degress * PI / 180.0
 }
