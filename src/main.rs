@@ -117,7 +117,7 @@ fn main() {
     const IMAGE_HEIGHT: f64 = IMAGE_WIDTH / ASPECT_RATIO;
     const MAX_DEPTH: u32 = 50;
 
-    const SAMPLES_PER_PIXEL: u32 = 500;
+    const SAMPLES_PER_PIXEL: u32 = 10;
 
     let image: Image = Image::new(IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32);
     write_file_info(image.width(), image.height());
@@ -127,7 +127,7 @@ fn main() {
 
     //Camera
 
-    let lookfrom = Vec3(13.0, 2.0, 3.0);
+    let lookfrom = Vec3(-10.0, 0.0, 0.0);
     let lookat = Vec3(0.0, 0.0, 0.0);
     let vup = Vec3(0.0, 1.0, 0.0);
     let camera = Camera::new(lookfrom, lookat, vup, 20.0, ASPECT_RATIO, 0.1, 10.0);

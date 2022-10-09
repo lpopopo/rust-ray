@@ -10,8 +10,8 @@ pub struct Ray {
 impl Ray {
     pub fn new(origin: Vec3, direction: Vec3) -> Ray {
         Ray {
-            origin,
-            direction,
+            origin,    //光线射线原点
+            direction, //光线射线方向
             time: 0.0,
         }
     }

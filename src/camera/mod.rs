@@ -23,8 +23,11 @@ impl Camera {
         aperture: f64,
         focus_dist: f64,
     ) -> Camera {
+        //视角的单位向量
         let w = (lookfrom - lookat).unit_vector();
+        //视角与vup形成平面的法向量的单位向量
         let u = vup.cross(w).unit_vector();
+        //视角与u成平面的法向量的单位向量
         let v = w.cross(u);
 
         let theta = degrees_to_radians(vfov);
